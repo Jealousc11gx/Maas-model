@@ -19,3 +19,12 @@
 .usermotto {
   margin-top: 200px;
 }
+page {
+  height: 100vh;
+}
+.map {
+  height: 75vh;
+}
+.form {
+  height: 15vh;
+}

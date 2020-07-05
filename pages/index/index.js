@@ -1,26 +1,135 @@
 // 引入SDK核心类
-var QQMapWX = require('../../libs/qqmap-wx-jssdk.js');
-var qqmapsdk;
+import QQMapWX from '../../libs/qqmap-wx-jssdk.js';
+const chooseLocation = requirePlugin('chooseLocation');
+const key = 'GRZBZ-YUWCX-USU42-TGULS-N54HF-GBBBO'; //使用在腾讯位置服务申请的key
+const referer = 'Maas-model'; //调用插件的app的名称
+const category = '生活服务,娱乐休闲';
+// 实例化API核心类
+var qqmapsdk = new QQMapWX({
+    key: key // 必填
+});
+let isStartLocation = true;
+function naviagteToSelection(location){
+    wx.navigateTo({
+        url: 'plugin://chooseLocation/index?key=' + key + '&referer=' + referer + '&location=' + location + '&category=' + category
+    });
+}
+//在Page({})中使用下列代码
+//触发表单提交事件，调用接口
 Page({
- 
-    onLoad: function () {
-        // 实例化API核心类
-        qqmapsdk = new QQMapWX({
-            key: 'GRZBZ-YUWCX-USU42-TGULS-N54HF-GBBBO'
-        });
+
+    /**
+     * 页面的初始数据
+     */
+    data: {
+
     },
+    selectStart: function () {
+        isStartLocation = true;
+        const location = {
+            latitude: this.location.latitude,
+            longitude: this.location.longitude
+        };
+        naviagteToSelection(JSON.stringify(location));
+    },
+    selectDest: function () {
+        isStartLocation = false;
+        const location = {
+            latitude: this.location.latitude,
+            longitude: this.location.longitude
+        };
+        naviagteToSelection(JSON.stringify(location));
+    },
+    formSubmit: function (e) {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad: function (options) {
+        wx.getLocation({
+            type: 'gcj02',
+            success: res => {
+                qqmapsdk.reverseGeocoder({
+                    location: {
+                        latitude: res.latitude,
+                        longitude: res.longitude
+                    },
+                    success: (data) => {
+                        const locationDetail = data.result.formatted_addresses.recommend;
+                        this.setData({
+                            location: res,
+                            locationDetail: locationDetail
+                        });
+                    }
+                });
+
+            }
+        });
+
+
+    },
+
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady: function () {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面显示
+     */
     onShow: function () {
-        // 调用接口
-        qqmapsdk.search({
-            keyword: '酒店',
-            success: function (res) {
-                console.log(res);
-            },
-            fail: function (res) {
-                console.log(res);
-            },
-        complete: function (res) {
-            console.log(res);
+        const location = chooseLocation.getLocation();
+        if (isStartLocation) {
+            this.setData({
+                selected: {
+                    start: location
+                }
+            });
+        } else {
+            this.setData({
+                selected: {
+                    dest: location
+                }
+            });
         }
-    });}
+    },
+
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide: function () {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload: function () {
+
+    },
+
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh: function () {
+
+    },
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom: function () {
+
+    },
+
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage: function () {
+
+    }
 })
