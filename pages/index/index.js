@@ -24,7 +24,8 @@ Page({
     data: {
 
     },
-    selectStart: function () {
+    selectStart: function (e) {
+        console.log("开始位置");
         isStartLocation = true;
         const location = {
             latitude: this.location.latitude,
@@ -32,7 +33,8 @@ Page({
         };
         naviagteToSelection(JSON.stringify(location));
     },
-    selectDest: function () {
+    selectDest: function (e) {
+        console.log("结束位置");
         isStartLocation = false;
         const location = {
             latitude: this.location.latitude,

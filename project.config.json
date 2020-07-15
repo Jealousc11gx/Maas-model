@@ -33,7 +33,7 @@
 		"packNpmRelationList": []
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.11.3",
+	"libVersion": "2.12.0",
 	"appid": "wxb7c2a40921af0f05",
 	"projectname": "MaasModel",
 	"debugOptions": {

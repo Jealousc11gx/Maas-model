@@ -4,12 +4,12 @@
   <!-- 起点输入框,同终点，不填默认当前位置 -->
   <label>
     起点坐标：
-    <input bindfocus="{{selectStart}}" style="border:1px solid #000;" name="start" value="{{selected.start}}"></input>
+    <input bindblur="{{selectStart}}" style="border:1px solid #000;" name="start" value="{{selected.start}}"></input>
   </label>
   <!-- 终点输入框,例：39.984060,116.307520 -->
   <label>
     终点坐标：
-    <input style="border:1px solid #000;" bindfocus="{{selectDest}}" name="dest" value="{{selected.dest}}"></input>
+    <input style="border:1px solid #000;" bindblur="{{selectDest}}" name="dest" value="{{selected.dest}}"></input>
   </label>
   <!-- 提交表单数据 -->
   <button form-type="submit">路线规划</button>
