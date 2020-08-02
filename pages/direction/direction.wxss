@@ -1,0 +1,8 @@
+/* pages/direction/direction.wxss */
+.container {
+    padding: 0rpx;
+}
+.center{
+    display: flex;
+    justify-content: center;
+  }

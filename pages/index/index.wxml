@@ -2,15 +2,36 @@
 <form bindsubmit="formSubmit">
   <!-- 输入起点和目的地经纬度坐标，格式为string格式 -->
   <!-- 起点输入框,同终点，不填默认当前位置 -->
-  <label>
+  <label style="display:flex;justify-content:space-around;">
     起点坐标：
-    <input bindblur="{{selectStart}}" style="border:1px solid #000;" name="start" value="{{selected.start}}"></input>
+    <input style="border:1px solid #000;" name="start" value="{{selected.start.latitude + ',' + selected.start.longitude}}"></input>
+    <button bindtap="selectStart">选择起点</button>
   </label>
   <!-- 终点输入框,例：39.984060,116.307520 -->
-  <label>
+  <label style="display:flex;justify-content:space-around;">
     终点坐标：
-    <input style="border:1px solid #000;" bindblur="{{selectDest}}" name="dest" value="{{selected.dest}}"></input>
+    <input style="border:1px solid #000;" name="dest" value="{{selected.dest.latitude + ',' + selected.dest.longitude}}"></input>
+    <button bindtap="selectDest">选择终点</button>
   </label>
+  <radio-group bindchange="selectType">
+    <label class="radio">
+      <radio value="driving" checked="{{true}}" />
+      驾车
+    </label>
+    <label class="radio">
+      <radio value="walking" checked="{{false}}" />
+      步行
+    </label>
+    <label class="radio">
+      <radio value="bicycling" checked="{{false}}" />
+      骑行
+    </label>
+  </radio-group>
+  <checkbox-group bindchange="selectMask">
+    <label class="checkbox">
+      <checkbox value="mask" /> 已戴口罩
+    </label>
+  </checkbox-group>
   <!-- 提交表单数据 -->
   <button form-type="submit">路线规划</button>
 </form>

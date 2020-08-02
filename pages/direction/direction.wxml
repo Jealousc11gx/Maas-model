@@ -1,0 +1,22 @@
+<!-- pages/direction/direction.wxml -->
+<view class="container">
+    <view class="page-body">
+        <view class="page-section">
+            <map style="height:70vh;width:100vh;" include-points="{{route.marks}}" polyline="{{route.polylines}}" latitude="{{route.marks[0].latitude}}" longitude="{{route.marks[0].longitude}}" />
+        </view>
+        <view style="margin: 2rpx;height: 20vh" class="page-section">
+            <scroll-view scroll-y="true" scroll-with-animation="true" style="height: 30vh;">
+                <view wx:for="{{routes}}" wx:for-index="idx" wx:for-item="item">
+                    <button class="btn" type="default" data-route="{{item}}" bindtap="selectRoute">
+                        {{'方案'+idx}}
+                    </button>
+                    <view class="center">{{'距离'+item.distance+'米'}}</view>
+                    <view class="center">{{'花费'+item.timespan+'分钟'}}</view>
+                    <view  class="center" >
+                        <text wx:for="{{item.tags}}" wx:for-item="tag">{{tag}}</text>
+                    </view>
+                </view>
+            </scroll-view>
+        </view>
+    </view>
+</view>

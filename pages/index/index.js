@@ -1,5 +1,6 @@
 // 引入SDK核心类
 import QQMapWX from '../../libs/qqmap-wx-jssdk.js';
+import {getRoutes} from '../../utils/util';
 const chooseLocation = requirePlugin('chooseLocation');
 const key = 'GRZBZ-YUWCX-USU42-TGULS-N54HF-GBBBO'; //使用在腾讯位置服务申请的key
 const referer = 'Maas-model'; //调用插件的app的名称
@@ -9,7 +10,9 @@ var qqmapsdk = new QQMapWX({
     key: key // 必填
 });
 let isStartLocation = true;
-function naviagteToSelection(location){
+let type = '';
+let mask = 'mask';
+function naviagteToSelection(location) {
     wx.navigateTo({
         url: 'plugin://chooseLocation/index?key=' + key + '&referer=' + referer + '&location=' + location + '&category=' + category
     });
@@ -28,8 +31,8 @@ Page({
         console.log("开始位置");
         isStartLocation = true;
         const location = {
-            latitude: this.location.latitude,
-            longitude: this.location.longitude
+            latitude: this.data.location.latitude,
+            longitude: this.data.location.longitude
         };
         naviagteToSelection(JSON.stringify(location));
     },
@@ -37,13 +40,37 @@ Page({
         console.log("结束位置");
         isStartLocation = false;
         const location = {
-            latitude: this.location.latitude,
-            longitude: this.location.longitude
+            latitude: this.data.location.latitude,
+            longitude: this.data.location.longitude
         };
         naviagteToSelection(JSON.stringify(location));
     },
+    selectType: function(e){
+        type = e.detail.value;
+    },
+    selectMask: function(e){
+        mask = e.detail.value;
+    },
     formSubmit: function (e) {
-
+        const _this = this;
+        qqmapsdk.direction({
+            mode: type,
+            from: e.detail.value.start,
+            to: e.detail.value.dest,
+            success: function(res){
+                console.log(res);
+                const routes = getRoutes(res, mask === 'mask');
+                wx.navigateTo({
+                  url: '../direction/direction',
+                  success: function(res){
+                    res.eventChannel.emit('acceptRoutes',routes);
+                  },
+                  fail: function(e){
+                      console.log(e);
+                  }
+                })
+            }
+        });
     },
 
     /**
@@ -85,19 +112,17 @@ Page({
      */
     onShow: function () {
         const location = chooseLocation.getLocation();
+        console.log(location);
+        let selected = {};
+        Object.assign(selected, this.data.selected);
         if (isStartLocation) {
-            this.setData({
-                selected: {
-                    start: location
-                }
-            });
+            selected.start = location;
         } else {
-            this.setData({
-                selected: {
-                    dest: location
-                }
-            });
+            selected.dest = location;
         }
+        this.setData({
+            selected: selected
+        });
     },
 
     /**
