@@ -39,10 +39,9 @@ function polyline(coors) {
   return pl;
 }
 
-function getRoutes(ret, mask) {
-  if (ret.status !== 0) return undefined;
-  console.log(ret.result.routes);
-  const routes =  ret.result.routes.map(route => {
+function getRoutes(result, mask) {
+  console.log(result);
+  return  result.map(route => {
     // 公共交通
     if (route.mode === undefined) {
       const step = filter(route.steps,step => step.mode === 'TRANSIT')[0];
@@ -107,7 +106,7 @@ function getRoutes(ret, mask) {
             width: 4
           }
         ],
-        tags: route.tags,
+        tags: ['驾车'],
         timespan: route.duration,
         distance: route.distance,
         fare: fare
@@ -127,7 +126,7 @@ function getRoutes(ret, mask) {
             width: 4
           }
         ],
-        tags: route.tags,
+        tags: ['步行'],
         timespan: route.duration,
         distance: route.distance,
         fare: 0
@@ -147,7 +146,7 @@ function getRoutes(ret, mask) {
             width: 4
           }
         ],
-        tags: route.tags,
+        tags: ['骑车'],
         timespan: route.duration,
         distance: route.distance,
         fare : fare
@@ -158,13 +157,22 @@ function getRoutes(ret, mask) {
       };
     }
   }).sort((a, b) => a.score > b.score);
-  if(routes[0].tags == undefined){
-    routes[0].tags = [];
-  }
-  routes[0].tags.push('社交距离最远')
-  return routes;
+  
+  
+}
+async function getLines(qqmapsdk,start,dest,type) {
+  return new Promise((resolve,reject)=> {
+    qqmapsdk.direction({
+      mode: type,
+      from: start,
+      to: dest,
+      success: res => resolve(res),
+      fail: err=>reject(err)
+  });
+  });
 }
 module.exports = {
   formatTime: formatTime,
-  getRoutes: getRoutes
+  getRoutes: getRoutes,
+  getLines: getLines
 };

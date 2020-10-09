@@ -1,6 +1,6 @@
 // 引入SDK核心类
 import QQMapWX from '../../libs/qqmap-wx-jssdk.js';
-import {getRoutes} from '../../utils/util';
+import {getRoutes,getLines} from '../../utils/util';
 const chooseLocation = requirePlugin('chooseLocation');
 const key = 'GRZBZ-YUWCX-USU42-TGULS-N54HF-GBBBO'; //使用在腾讯位置服务申请的key
 const referer = 'Maas-model'; //调用插件的app的名称
@@ -51,7 +51,7 @@ Page({
     selectMask: function(e){
         mask = e.detail.value;
     },
-    formSubmit: function (e) {
+    formSubmit: async function (e) {
         const _this = this;
         let queryType;
         if(type === 'bus' || type === 'subway'){
@@ -60,24 +60,25 @@ Page({
         else {
             queryType = type;
         }
-        qqmapsdk.direction({
-            mode: queryType,
-            from: e.detail.value.start,
-            to: e.detail.value.dest,
-            success: function(res){
-                console.log(res);
-                const routes = getRoutes(res, mask === 'mask');
-                wx.navigateTo({
-                  url: '../direction/direction',
-                  success: function(res){
-                    res.eventChannel.emit('acceptRoutes',routes);
-                  },
-                  fail: function(e){
+        let  lines = []
+        const walking = (await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'walking'));
+        lines.push(walking.result.routes);
+        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'bicycling')).result.routes);
+        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'driving')).result.routes);
+        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'transit')).result.routes);
+        lines = lines.flat();
+        console.log(lines);
+        const routes = getRoutes(lines, mask === 'mask');
+        wx.navigateTo({
+            url: '../direction/direction',
+                success: function(res){
+                res.eventChannel.emit('acceptRoutes',routes);
+                },
+                fail: function(e){
                       console.log(e);
                   }
-                })
-            }
         });
+          
     },
 
     /**

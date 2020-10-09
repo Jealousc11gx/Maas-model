@@ -13,7 +13,7 @@
     <input style="border:1px solid #000;" name="dest" value="{{selected.dest.latitude + ',' + selected.dest.longitude}}"></input>
     <button bindtap="selectDest">选择终点</button>
   </label>
-  <radio-group bindchange="selectType">
+  <!-- <radio-group bindchange="selectType">
     <label class="radio">
       <radio value="driving" checked="{{true}}" />
       驾车
@@ -35,7 +35,7 @@
     <label class="checkbox">
       <checkbox value="mask" /> 已戴口罩
     </label>
-  </checkbox-group>
+  </checkbox-group> -->
   <!-- 提交表单数据 -->
   <button form-type="submit">路线规划</button>
 </form>
