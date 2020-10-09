@@ -7,13 +7,13 @@
  * @param {number} money 费用 
  */
 
-function direction(route,timespan,type,mask,money){
+function direction(route,timespan,type,mask,money,_s,_t,_m){
     var s;//定义交通工具社交距离常量s
     if(type == "driving"){s=0.999;}
     if(type == "bicycling"){s=14.651;} 
     if(type == "bus"){s=0.4765;} 
     if(type == "subway"){s=0.9742;} 
-    if(type == "rail"){s=2;} //根据交通方式的不同改变社交距离常量
+    if(type == "walking"){s=6.41;} //根据交通方式的不同改变社交距离常量
     var s0 = 20;//定义步行社交距离常量s0
     var t = timespan;//定义时间t
     var S,t1,t2;//定义总社交距离S，起点到上车点的时间t1，下车点到终点的时间t2
@@ -28,7 +28,7 @@ function direction(route,timespan,type,mask,money){
     }
     else
     {
-        S = (c1*s)/(c2*t + c3*M);
+        S = (c1*s/_s)/(c2*t/_t + c3*M/_m);
         return S;
     }
 
