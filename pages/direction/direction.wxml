@@ -12,9 +12,11 @@
                     </button>
                     <view class="center">{{'距离'+item.distance+'米'}}</view>
                     <view class="center">{{'花费'+item.timespan+'分钟'}}</view>
-                    <view  class="center" >
-                        <text wx:for="{{item.tags}}" wx:for-item="tag">{{tag}}</text>
-                    </view>
+                    <view class="center">{{'费用'+item.fare+'元'}}</view>
+                   
+                        <view class="center" wx:for="{{item.tags}}" wx:for-item="tag">{{tag}}</view>
+                       
+                    
                 </view>
             </scroll-view>
         </view>

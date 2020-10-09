@@ -26,6 +26,10 @@
       <radio value="bicycling" checked="{{false}}" />
       骑行
     </label>
+    <label class="radio">
+      <radio value="transit" checked="{{false}}" />
+      公交
+    </label>
   </radio-group>
   <checkbox-group bindchange="selectMask">
     <label class="checkbox">

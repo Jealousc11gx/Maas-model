@@ -53,8 +53,15 @@ Page({
     },
     formSubmit: function (e) {
         const _this = this;
+        let queryType;
+        if(type === 'bus' || type === 'subway'){
+            queryType = 'transit';
+        }
+        else {
+            queryType = type;
+        }
         qqmapsdk.direction({
-            mode: type,
+            mode: queryType,
             from: e.detail.value.start,
             to: e.detail.value.dest,
             success: function(res){

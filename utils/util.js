@@ -1,4 +1,16 @@
 import { direction } from "../libs/dir.js";
+function filter(array,cb, context){
+  context = context || this;  //确定上下文，默认为this
+
+  var len = array.length;  //数组的长度
+  var r = [];  //最终将返回的结果数组
+  for(var i = 0; i < len; i++){
+    if(cb.call(context, array[i], i, array)){  //filter回调函数的三个参数：元素值，元素索引，原数组
+      r.push(array[i]);
+    }
+  }
+  return r;
+};
 const formatTime = date => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
@@ -26,13 +38,59 @@ function polyline(coors) {
   }
   return pl;
 }
+
 function getRoutes(ret, mask) {
   if (ret.status !== 0) return undefined;
+  console.log(ret.result.routes);
   const routes =  ret.result.routes.map(route => {
     // 公共交通
     if (route.mode === undefined) {
+      const step = filter(route.steps,step => step.mode === 'TRANSIT')[0];
+      let score;
+      let pl;
+      let duration;
+      let fare;
+      let line =filter( step.lines,line => line.vehicle === 'BUS' ||  line.vehicle === 'SUBWAY')[0];
+      pl = polyline(line.polyline);
+      duration = line.duration;
+      fare = line.price;
+      let way;
+      if(line.vehicle === 'BUS'){
+        if(fare === -1) fare = 2;
+        else fare/=100;
+        score = direction(pl,line.duration,'bus',mask,fare);
+        way = '公交车';
+      }else if(line.vehicle === 'SUBWAY'){
+        if(fare==-1) {
+          console.log(2+Math.ceil((line.distance/1000-4)/4)*1);
+          if(line.distance<4000) {fare = 2;}
+          else if(line.distance<12000)  { fare = 2+Math.ceil((line.distance/1000-4)/4)*1;}
+          else if(line.distance<24000) { fare = 4+Math.ceil((line.distance/1000-12)/6)*1;}
+          else if(line.distance<40000) {fare = 6+Math.ceil((line.distance/1000-24)/8)*1;}
+          else if(line.distance<50000) {fare = 8+Math.ceil((line.distance/1000-40)/10)*1;}
+          else {9 + Math.round((line.distance/1000-50)/20)*1;}
+        }else {
+          fare /=100;
+        }
+        score = direction(pl,line.duration,'subway',mask,fare);
+        way = '地铁';
+      }
+      
+      
       return {
-        score: 0
+        score:score,
+        marks:  [pl[0], pl[pl.length - 1]],
+        polylines: [
+          {
+            points: pl,
+            color: '#FF0000DD',
+            width: 8
+          }
+        ],
+        tags: [way,line.title,line.destination.title+'方向',line.geton.title+'站出发',line.getoff.title+'站下车'],
+        timespan: duration,
+        distance: line.distance,
+        fare: fare
       };
     }
     // 驾车 
@@ -51,7 +109,8 @@ function getRoutes(ret, mask) {
         ],
         tags: route.tags,
         timespan: route.duration,
-        distance: route.distance
+        distance: route.distance,
+        fare: fare
 
       }
     }
@@ -70,14 +129,16 @@ function getRoutes(ret, mask) {
         ],
         tags: route.tags,
         timespan: route.duration,
-        distance: route.distance
+        distance: route.distance,
+        fare: 0
       };
     }
     // 骑行
     else if (route.mode === 'BICYCLING') {
       const pl = polyline(route.polyline);
+      let fare =Math.ceil((route.duration)/30)*1.5;
       return {
-        score: direction(pl, route.duration, 'bicycling', mask, 0),
+        score: direction(pl, route.duration, 'bicycling', mask, fare),
         marks: [pl[0], pl[pl.length - 1]],
         polylines: [
           {
@@ -88,7 +149,8 @@ function getRoutes(ret, mask) {
         ],
         tags: route.tags,
         timespan: route.duration,
-        distance: route.distance
+        distance: route.distance,
+        fare : fare
       };
     } else {
       return {
