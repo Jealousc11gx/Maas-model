@@ -5,7 +5,8 @@
  * @param {string} type 交通类型,可选值： driving、walking、bicycling、bus、subway、rail
  * @param {boolean} mask 是否戴口罩 
  * @param {number} money 费用 
- */
+ * @param {boolean} person 乘客类型
+ **/
 
 function direction(route,timespan,type,mask,money,_s,_t,_m){
     var s;//定义交通工具社交距离常量s
@@ -20,10 +21,11 @@ function direction(route,timespan,type,mask,money,_s,_t,_m){
     var M = money;//定义金钱M
     var C1 = 0.5,C2 = 0.3,C3 = 0.2,C4 = 1,C5 = 1,C6 = 1; /* 权重没有对应的形参,暂且简单的定义为常数，可以再加参数来传进来 */
     var k = 50;//定义戴口罩方案中的常量K
+    var persontype = person;//定义乘客类型,1为安全稳健，2为金钱节约
     
     if(mask)//根据是否戴口罩选择两种计算方式
     {
-        S = C1*(s+k)/(C2*t) ;
+        S = C1*s/(C2*t) ;
         return S;
     }
     else
@@ -31,9 +33,12 @@ function direction(route,timespan,type,mask,money,_s,_t,_m){
         S = (c1*s/_s)/(c2*t/_t + c3*M/_m);
         return S;
     }
-
+   
+    //设置优选交通工具
     
-    return 1;}
+    
+    //return 1;
+}
 
 module.exports = {
     direction: direction

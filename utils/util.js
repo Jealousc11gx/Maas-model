@@ -118,9 +118,10 @@ function getRoutes(result, mask) {
         s: 0.999
       }
     }
-    // 步行
+    // 步行 已修改
     else if (route.mode === 'WALKING') {
       const pl = polyline(route.polyline);
+      let fare  = 0;
       return {
         type: 'walking',
         score: 0,
@@ -139,7 +140,7 @@ function getRoutes(result, mask) {
         s: 6.41
       };
     }
-    // 骑行
+    // 骑行 已修改
     else if (route.mode === 'BICYCLING') {
       const pl = polyline(route.polyline);
       let fare =Math.ceil((route.duration)/30)*1.5;
@@ -147,7 +148,7 @@ function getRoutes(result, mask) {
         type: 'bicycling',
         score: 0,
         marks: [pl[0], pl[pl.length - 1]],
-        polylines: [
+        polylines:   [
           {
             points: pl,
             color: '#FFFF00DD',
