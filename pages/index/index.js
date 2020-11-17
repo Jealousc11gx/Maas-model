@@ -61,23 +61,34 @@ Page({
             queryType = type;
         }
         let  lines = []
-        const walking = (await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'walking'));
-        lines.push(walking.result.routes);
-        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'bicycling')).result.routes);
-        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'driving')).result.routes);
-        lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'transit')).result.routes);
-        lines = lines.flat();
-        console.log(lines);
-        const routes = getRoutes(lines, mask === 'mask');
-        wx.navigateTo({
-            url: '../direction/direction',
-                success: function(res){
-                res.eventChannel.emit('acceptRoutes',routes);
-                },
-                fail: function(e){
-                      console.log(e);
-                  }
-        });
+        
+        try{
+            const walking = (await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'walking'));
+            lines.push(walking.result.routes);
+            lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'bicycling')).result.routes);
+            lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'driving')).result.routes);
+            lines.push((await getLines(qqmapsdk,e.detail.value.start,e.detail.value.dest,'transit')).result.routes);
+            lines = lines.flat();
+            console.log(lines);
+            const routes = getRoutes(lines, mask === 'mask');
+            wx.navigateTo({
+                url: '../direction/direction',
+                    success: function(res){
+                    res.eventChannel.emit('acceptRoutes',routes);
+                    },
+                    fail: function(e){
+                          console.log(e);
+                      }
+            });
+        }catch(e){
+            console.log(e);
+            wx.showToast({
+              title: e.message ?? "路线规划出错",
+              icon: 'none',
+            });
+        }
+
+       
           
     },
 
