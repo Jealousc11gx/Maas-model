@@ -21,7 +21,7 @@ function direction(route,timespan,type,mask,money,_s,_t,_m){
     var M = money;//定义金钱M
     var C1 = 0.5,C2 = 0.3,C3 = 0.2,C4 = 1,C5 = 1,C6 = 1; /* 权重没有对应的形参,暂且简单的定义为常数，可以再加参数来传进来 */
     var k = 50;//定义戴口罩方案中的常量K
-    var persontype = person;//定义乘客类型,1为安全稳健，2为金钱节约
+    //var persontype = person;//定义乘客类型,1为安全稳健，2为金钱节约
     
     if(mask)//根据是否戴口罩选择两种计算方式
     {
