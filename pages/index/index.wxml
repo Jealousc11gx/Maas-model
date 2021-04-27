@@ -1,17 +1,18 @@
 <!-- 地图容器 -->
+<view style="height:25vh;"></view>
 <form bindsubmit="formSubmit">
   <!-- 输入起点和目的地经纬度坐标，格式为string格式 -->
   <!-- 起点输入框,同终点，不填默认当前位置 -->
   <label style="display:flex;justify-content:space-around;">
     起点坐标：
     <input style="border:1px solid #000;" name="start" value="{{selected.start.latitude + ',' + selected.start.longitude}}"></input>
-    <button bindtap="selectStart">选择起点</button>
+    <button class="share_button" bindtap="selectStart">选择起点</button>
   </label>
   <!-- 终点输入框,例：39.984060,116.307520 -->
   <label style="display:flex;justify-content:space-around;">
     终点坐标：
     <input style="border:1px solid #000;" name="dest" value="{{selected.dest.latitude + ',' + selected.dest.longitude}}"></input>
-    <button bindtap="selectDest">选择终点</button>
+    <button class="share_button" bindtap="selectDest">选择终点</button>
   </label>
   <!-- <radio-group bindchange="selectType">
     <label class="radio">
@@ -37,13 +38,5 @@
     </label>
   </checkbox-group> -->
   <!-- 提交表单数据 -->
-  <button form-type="submit">路线规划</button>
+  <button type="primary" form-type="submit">路线规划</button>
 </form>
-<view>
-  <view>
-    <text>经度：{{location.latitude}},维度：{{location.longitude}}</text>
-  </view>
-  <view>
-    <text>{{locationDetail}}</text>
-  </view>
-</view>
